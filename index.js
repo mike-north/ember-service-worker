@@ -63,11 +63,16 @@ module.exports = {
     // Add the project itself as a possible plugin, this way user can add custom
     // service-worker code in their app, without needing to build a plugin.
     plugins = [this].concat(plugins, this.project);
-
+    let babelOverrides = {};
+    let swOptions = this.app.options['ember-service-worker'];
+    if (swOptions && swOptions.babel) {
+      babelOverrides = swOptions.babel || {};
+    }
     let serviceWorkerBuilder = new ServiceWorkerBuilder({
       app: this,
       appTree,
       minifyJS: this.app.options.minifyJS,
+      babelOverrides,
       fingerprint: this.app.options.fingerprint.enabled,
       plugins,
       rootURL: this._getRootURL(),
